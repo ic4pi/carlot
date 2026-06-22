@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Add Vehicle</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/zxing-js/0.20.0/zxing.min.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0f0f0f;
+    color: #f0f0f0;
+    min-height: 100vh;
+    padding: 0 0 80px;
+  }
+
+  header {
+    background: #1a1a1a;
+    border-bottom: 2px solid #e8194b;
+    padding: 16px 20px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  header h1 {
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #fff;
+  }
+
+  header p {
+    font-size: 12px;
+    color: #888;
+    margin-top: 2px;
+  }
+
+  /* STEP INDICATOR */
+  .steps {
+    display: flex;
+    padding: 16px 20px;
+    gap: 8px;
+    background: #141414;
+    border-bottom: 1px solid #222;
+  }
+
+  .step-dot {
+    flex: 1;
+    height: 4px;
+    border-radius: 2px;
+    background: #2a2a2a;
+    transition: background 0.3s;
+  }
+
+  .step-dot.active { background: #e8194b; }
+  .step-dot.done { background: #4caf50; }
+
+  /* SECTIONS */
+  .section {
+    display: none;
+    padding: 24px 20px;
+  }
+
+  .section.active { display: block; }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #e8194b;
+    margin-bottom: 8px;
+  }
+
+  .section-title {
+    font-size: 22px;
+    font-weight: 700;
+    color: #fff;
+    margin-bottom: 6px;
+  }
+
+  .section-sub {
+    font-size: 14px;
+    color: #888;
+    margin-bottom: 24px;
+    line-height: 1.5;
+  }
+
+  /* CAMERA */
+  #video-container {
+    position: relative;
+    width: 100%;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #000;
+    aspect-ratio: 16/9;
+    margin-bottom: 16px;
+  }
+
+  #video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .scan-overlay {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  .scan-box {
+    width: 80%;
+    height: 60px;
+    border: 2px solid #e8194b;
+    border-radius: 6px;
+    position: relative;
+  }
+
+  .scan-line {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: rgba(232, 25, 75, 0.7);
+    animation: scanline 2s ease-in-out infinite;
+  }
+
+  @keyframes scanline {
+    0%, 100% { top: 10%; }
+    50% { top: 90%; }
+  }
+
+  .scan-status {
+    position: absolute;
+    bottom: 10px;
+    left: 0; right: 0;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(255,255,255,0.7);
+    background: rgba(0,0,0,0.5);
+    padding: 4px;
+  }
+
+  /* BUTTONS */
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 16px;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    text-align: center;
+    transition: opacity 0.2s, transform 0.1s;
+    letter-spacing: 0.03em;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .btn:active { transform: scale(0.98); opacity: 0.85; }
+
+  .btn-primary {
+    background: #e8194b;
+    color: #fff;
+  }
+
+  .btn-secondary {
+    background: #2a2a2a;
+    color: #ccc;
+    margin-top: 10px;
+  }
+
+  .btn-success {
+    background: #4caf50;
+    color: #fff;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    color: #888;
+    border: 1px solid #333;
+    margin-top: 10px;
+    font-size: 14px;
+    padding: 12px;
+  }
+
+  /* INPUTS */
+  .field {
+    margin-bottom: 16px;
+  }
+
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+
+  .field input, .field textarea, .field select {
+    width: 100%;
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 16px;
+    padding: 14px 16px;
+    outline: none;
+    transition: border-color 0.2s;
+    -webkit-appearance: none;
+  }
+
+  .field input:focus, .field textarea:focus, .field select:focus {
+    border-color: #e8194b;
+  }
+
+  .field input.filled {
+    border-color: #4caf50;
+    background: #1a2a1a;
+  }
+
+  /* VIN DISPLAY */
+  .vin-result {
+    background: #1a2a1a;
+    border: 1px solid #4caf50;
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 20px;
+  }
+
+  .vin-result .vin-code {
+    font-family: monospace;
+    font-size: 13px;
+    color: #4caf50;
+    margin-bottom: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  .vin-fields {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .vin-field {
+    background: #0f1f0f;
+    border-radius: 6px;
+    padding: 10px 12px;
+  }
+
+  .vin-field .vf-label {
+    font-size: 10px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 2px;
+  }
+
+  .vin-field .vf-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #e0e0e0;
+  }
+
+  /* PHOTOS */
+  .photo-prompt {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+
+  .photo-slot {
+    aspect-ratio: 4/3;
+    border-radius: 10px;
+    border: 2px dashed #333;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    cursor: pointer;
+    background: #1a1a1a;
+    transition: border-color 0.2s;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .photo-slot.captured {
+    border-style: solid;
+    border-color: #4caf50;
+  }
+
+  .photo-slot img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    inset: 0;
+  }
+
+  .photo-slot .slot-label {
+    font-size: 11px;
+    color: #666;
+    text-align: center;
+    padding: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+
+  .photo-slot .slot-icon {
+    font-size: 24px;
+    margin-bottom: 4px;
+    color: #444;
+  }
+
+  .photo-slot .remove-photo {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    background: rgba(232,25,75,0.9);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    font-size: 14px;
+    line-height: 24px;
+    text-align: center;
+    cursor: pointer;
+    z-index: 10;
+    display: none;
+  }
+
+  .photo-slot.captured .remove-photo { display: block; }
+
+  .photo-slot .slot-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0,0,0,0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+  }
+
+  .photo-slot.captured:hover .slot-overlay { opacity: 1; }
+
+  input[type="file"] { display: none; }
+
+  /* DIVIDER */
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0;
+    color: #444;
+    font-size: 12px;
+  }
+
+  .divider::before, .divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #2a2a2a;
+  }
+
+  /* SUCCESS */
+  .success-icon {
+    font-size: 64px;
+    text-align: center;
+    margin: 20px 0 10px;
+  }
+
+  /* LOADING */
+  .spinner {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .loading-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #888;
+    font-size: 14px;
+  }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 20px;
+    left: 20px; right: 20px;
+    background: #1e1e1e;
+    border: 1px solid #333;
+    border-radius: 10px;
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #fff;
+    z-index: 999;
+    transform: translateY(100px);
+    opacity: 0;
+    transition: all 0.3s;
+  }
+
+  .toast.show {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .toast.error { border-color: #e8194b; }
+  .toast.success { border-color: #4caf50; }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Add Vehicle</h1>
+  <p id="header-sub">Step 1 of 4 — Scan VIN</p>
+</header>
+
+<div class="steps">
+  <div class="step-dot active" id="dot-1"></div>
+  <div class="step-dot" id="dot-2"></div>
+  <div class="step-dot" id="dot-3"></div>
+  <div class="step-dot" id="dot-4"></div>
+</div>
+
+<!-- STEP 1: VIN SCAN -->
+<div class="section active" id="step-1">
+  <div class="section-label">Step 1</div>
+  <div class="section-title">Scan the Barcode</div>
+  <div class="section-sub">Point camera at the barcode on the driver's door jamb or windshield.</div>
+
+  <div id="video-container">
+    <video id="video" autoplay muted playsinline></video>
+    <div class="scan-overlay">
+      <div class="scan-box">
+        <div class="scan-line"></div>
+      </div>
+    </div>
+    <div class="scan-status" id="scan-status">Looking for barcode…</div>
+  </div>
+
+  <div class="divider">or enter manually</div>
+
+  <div class="field">
+    <label>VIN Number</label>
+    <input type="text" id="vin-manual" placeholder="1HGBH41JXMN109186" maxlength="17"
+      style="text-transform:uppercase; font-family:monospace; letter-spacing:0.08em">
+  </div>
+
+  <button class="btn btn-primary" id="vin-submit-btn" onclick="submitVIN()">Look Up VIN</button>
+  <div id="vin-loading" class="loading-row" style="display:none">
+    <span class="spinner"></span> Decoding VIN…
+  </div>
+</div>
+
+<!-- STEP 2: CONFIRM VIN DATA -->
+<div class="section" id="step-2">
+  <div class="section-label">Step 2</div>
+  <div class="section-title">Confirm Details</div>
+  <div class="section-sub">VIN decoded. Check everything looks right.</div>
+
+  <div class="vin-result" id="vin-result-box">
+    <div class="vin-code" id="vin-display"></div>
+    <div class="vin-fields" id="vin-fields"></div>
+  </div>
+
+  <div class="field">
+    <label>Price ($)</label>
+    <input type="number" id="price" placeholder="12500" inputmode="numeric">
+  </div>
+
+  <div class="field">
+    <label>Mileage</label>
+    <input type="number" id="miles" placeholder="87000" inputmode="numeric">
+  </div>
+
+  <div class="field">
+    <label>Notes (optional)</label>
+    <textarea id="notes" rows="2" placeholder="New tires, one owner, clean title…" style="resize:none"></textarea>
+  </div>
+
+  <button class="btn btn-primary" onclick="goToPhotos()">Next — Add Photos</button>
+  <button class="btn btn-ghost" onclick="goBack(1)">← Rescan VIN</button>
+</div>
+
+<!-- STEP 3: PHOTOS -->
+<div class="section" id="step-3">
+  <div class="section-label">Step 3</div>
+  <div class="section-title">Add Photos</div>
+  <div class="section-sub">Tap each slot to take a photo. All 4 recommended.</div>
+
+  <div class="photo-prompt">
+    <div class="photo-slot" id="slot-0" onclick="triggerPhoto(0)">
+      <div class="slot-icon">📷</div>
+      <div class="slot-label">Front</div>
+      <button class="remove-photo" onclick="removePhoto(event, 0)">×</button>
+      <input type="file" id="file-0" accept="image/*" capture="environment" onchange="photoTaken(0, this)">
+    </div>
+    <div class="photo-slot" id="slot-1" onclick="triggerPhoto(1)">
+      <div class="slot-icon">📷</div>
+      <div class="slot-label">Rear</div>
+      <button class="remove-photo" onclick="removePhoto(event, 1)">×</button>
+      <input type="file" id="file-1" accept="image/*" capture="environment" onchange="photoTaken(1, this)">
+    </div>
+    <div class="photo-slot" id="slot-2" onclick="triggerPhoto(2)">
+      <div class="slot-icon">📷</div>
+      <div class="slot-label">Interior</div>
+      <button class="remove-photo" onclick="removePhoto(event, 2)">×</button>
+      <input type="file" id="file-2" accept="image/*" capture="environment" onchange="photoTaken(2, this)">
+    </div>
+    <div class="photo-slot" id="slot-3" onclick="triggerPhoto(3)">
+      <div class="slot-icon">📷</div>
+      <div class="slot-label">Odometer</div>
+      <button class="remove-photo" onclick="removePhoto(event, 3)">×</button>
+      <input type="file" id="file-3" accept="image/*" capture="environment" onchange="photoTaken(3, this)">
+    </div>
+  </div>
+
+  <button class="btn btn-primary" id="photos-next-btn" onclick="goToReview()">Review & Submit</button>
+  <button class="btn btn-ghost" onclick="goBack(2)">← Back</button>
+</div>
+
+<!-- STEP 4: REVIEW -->
+<div class="section" id="step-4">
+  <div class="section-label">Step 4</div>
+  <div class="section-title">Ready to Add</div>
+  <div class="section-sub">Everything looks good? Hit submit.</div>
+
+  <div id="review-summary" style="background:#1e1e1e; border-radius:10px; padding:16px; margin-bottom:20px;"></div>
+
+  <div id="review-photos" style="display:flex; gap:8px; margin-bottom:20px; overflow-x:auto;"></div>
+
+  <button class="btn btn-success" id="submit-btn" onclick="submitCar()">✓ Add to Inventory</button>
+  <div id="submit-loading" class="loading-row" style="display:none">
+    <span class="spinner"></span> Saving…
+  </div>
+  <button class="btn btn-ghost" onclick="goBack(3)">← Edit</button>
+</div>
+
+<!-- SUCCESS -->
+<div class="section" id="step-success">
+  <div class="success-icon">🎉</div>
+  <div class="section-title" style="text-align:center">Vehicle Added!</div>
+  <div class="section-sub" style="text-align:center; margin-top:8px" id="success-msg"></div>
+  <br>
+  <button class="btn btn-primary" onclick="reset()">Add Another Vehicle</button>
+  <button class="btn btn-secondary" onclick="window.location.href='/'">Back to Dashboard</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── STATE ────────────────────────────────────────────────
+let vinData = {};
+let photos = [null, null, null, null];
+let codeReader = null;
+let scanning = false;
+let currentStep = 1;
+
+// ─── STEP MANAGEMENT ──────────────────────────────────────
+const stepLabels = ['Scan VIN', 'Confirm Details', 'Add Photos', 'Review'];
+
+function setStep(n) {
+  currentStep = n;
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('step-' + n)?.classList.add('active') ||
+    document.getElementById('step-success')?.classList.add('active');
+
+  // dots
+  for (let i = 1; i <= 4; i++) {
+    const dot = document.getElementById('dot-' + i);
+    dot.className = 'step-dot';
+    if (i < n) dot.classList.add('done');
+    else if (i === n) dot.classList.add('active');
+  }
+
+  document.getElementById('header-sub').textContent =
+    n <= 4 ? `Step ${n} of 4 — ${stepLabels[n-1]}` : 'Done';
+}
+
+function goBack(to) { setStep(to); if (to === 1) startScanner(); }
+
+// ─── SCANNER ──────────────────────────────────────────────
+async function startScanner() {
+  try {
+    const ZXing = window.ZXing || window['@zxing/library'];
+    if (!ZXing) { document.getElementById('scan-status').textContent = 'Scanner unavailable — enter VIN manually'; return; }
+    codeReader = new ZXing.BrowserMultiFormatReader();
+    scanning = true;
+    await codeReader.decodeFromVideoDevice(null, 'video', (result, err) => {
+      if (result && scanning) {
+        scanning = false;
+        codeReader.reset();
+        const vin = result.getText().toUpperCase().replace(/[^A-HJ-NPR-Z0-9]/g, '');
+        if (vin.length >= 17) {
+          document.getElementById('vin-manual').value = vin;
+          document.getElementById('scan-status').textContent = '✓ Barcode captured!';
+          setTimeout(() => submitVIN(vin), 600);
+        } else {
+          scanning = true;
+          document.getElementById('scan-status').textContent = 'Try again — align barcode in box';
+        }
+      }
+    });
+  } catch(e) {
+    document.getElementById('scan-status').textContent = 'Camera unavailable — enter VIN manually';
+  }
+}
+
+// ─── VIN LOOKUP ───────────────────────────────────────────
+async function submitVIN(vin) {
+  vin = vin || document.getElementById('vin-manual').value.trim().toUpperCase();
+  if (vin.length < 11) { showToast('Enter a valid VIN (at least 11 characters)', 'error'); return; }
+
+  document.getElementById('vin-submit-btn').style.display = 'none';
+  document.getElementById('vin-loading').style.display = 'flex';
+
+  try {
+    const res = await fetch(`https://vpic.nhtsa.dot.gov/api/vehicles/decodevin/${vin}?format=json`);
+    const data = await res.json();
+    const results = data.Results;
+
+    const get = (var_) => {
+      const r = results.find(x => x.Variable === var_);
+      return r && r.Value && r.Value !== 'Not Applicable' && r.Value !== '0' ? r.Value : '—';
+    };
+
+    vinData = {
+      vin,
+      year: get('Model Year'),
+      make: get('Make'),
+      model: get('Model'),
+      trim: get('Trim'),
+      engine: get('Displacement (L)') !== '—' ? get('Displacement (L)') + 'L ' + get('Engine Configuration') : get('Engine Configuration'),
+      transmission: get('Transmission Style'),
+      drive: get('Drive Type'),
+      body: get('Body Class'),
+      color: '—'
+    };
+
+    renderVINResult();
+    if (scanning && codeReader) { codeReader.reset(); scanning = false; }
+    setStep(2);
+  } catch(e) {
+    showToast('VIN lookup failed. Check connection and try again.', 'error');
+  } finally {
+    document.getElementById('vin-submit-btn').style.display = 'block';
+    document.getElementById('vin-loading').style.display = 'none';
+  }
+}
+
+function renderVINResult() {
+  document.getElementById('vin-display').textContent = vinData.vin;
+  const fields = [
+    ['Year', vinData.year],
+    ['Make', vinData.make],
+    ['Model', vinData.model],
+    ['Trim', vinData.trim],
+    ['Body', vinData.body],
+    ['Engine', vinData.engine],
+    ['Drive', vinData.drive],
+    ['Trans.', vinData.transmission],
+  ];
+  document.getElementById('vin-fields').innerHTML = fields.map(([l, v]) =>
+    `<div class="vin-field"><div class="vf-label">${l}</div><div class="vf-value">${v}</div></div>`
+  ).join('');
+}
+
+// ─── PHOTOS ───────────────────────────────────────────────
+function triggerPhoto(i) { document.getElementById('file-' + i).click(); }
+
+function photoTaken(i, input) {
+  if (!input.files[0]) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    photos[i] = e.target.result;
+    const slot = document.getElementById('slot-' + i);
+    slot.classList.add('captured');
+    // Remove old img if any
+    slot.querySelectorAll('img').forEach(el => el.remove());
+    const img = document.createElement('img');
+    img.src = e.target.result;
+    slot.insertBefore(img, slot.firstChild);
+  };
+  reader.readAsDataURL(input.files[0]);
+}
+
+function removePhoto(e, i) {
+  e.stopPropagation();
+  photos[i] = null;
+  const slot = document.getElementById('slot-' + i);
+  slot.classList.remove('captured');
+  slot.querySelectorAll('img').forEach(el => el.remove());
+  document.getElementById('file-' + i).value = '';
+}
+
+function goToPhotos() {
+  const price = document.getElementById('price').value;
+  const miles = document.getElementById('miles').value;
+  if (!price || !miles) { showToast('Enter price and mileage first', 'error'); return; }
+  setStep(3);
+}
+
+// ─── REVIEW ───────────────────────────────────────────────
+function goToReview() {
+  const captured = photos.filter(Boolean).length;
+  if (captured === 0) { showToast('Add at least one photo', 'error'); return; }
+
+  const price = document.getElementById('price').value;
+  const miles = parseInt(document.getElementById('miles').value).toLocaleString();
+  const notes = document.getElementById('notes').value;
+
+  document.getElementById('review-summary').innerHTML = `
+    <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:12px">
+      ${vinData.year} ${vinData.make} ${vinData.model}
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:14px">
+      <div><span style="color:#888">Price</span><br><strong style="color:#4caf50;font-size:18px">$${parseInt(price).toLocaleString()}</strong></div>
+      <div><span style="color:#888">Miles</span><br><strong>${miles}</strong></div>
+      <div><span style="color:#888">Trim</span><br>${vinData.trim}</div>
+      <div><span style="color:#888">Drive</span><br>${vinData.drive}</div>
+    </div>
+    ${notes ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid #2a2a2a;font-size:13px;color:#aaa">${notes}</div>` : ''}
+  `;
+
+  const photoRow = document.getElementById('review-photos');
+  photoRow.innerHTML = '';
+  const labels = ['Front','Rear','Interior','Odometer'];
+  photos.forEach((p, i) => {
+    if (!p) return;
+    const wrap = document.createElement('div');
+    wrap.style.cssText = 'flex:0 0 120px;';
+    wrap.innerHTML = `
+      <img src="${p}" style="width:120px;height:80px;object-fit:cover;border-radius:8px;border:1px solid #333">
+      <div style="font-size:10px;color:#666;text-align:center;margin-top:4px;text-transform:uppercase">${labels[i]}</div>
+    `;
+    photoRow.appendChild(wrap);
+  });
+
+  setStep(4);
+}
+
+// ─── SUBMIT ───────────────────────────────────────────────
+async function submitCar() {
+  document.getElementById('submit-btn').style.display = 'none';
+  document.getElementById('submit-loading').style.display = 'flex';
+
+  // Simulate save — replace with your actual API call
+  await new Promise(r => setTimeout(r, 1800));
+
+  const vehicle = {
+    vin: vinData.vin,
+    year: vinData.year,
+    make: vinData.make,
+    model: vinData.model,
+    trim: vinData.trim,
+    engine: vinData.engine,
+    drive: vinData.drive,
+    transmission: vinData.transmission,
+    body: vinData.body,
+    price: document.getElementById('price').value,
+    miles: document.getElementById('miles').value,
+    notes: document.getElementById('notes').value,
+    photos: photos.filter(Boolean),
+    added: new Date().toISOString()
+  };
+
+  console.log('Saving vehicle:', vehicle);
+  // await fetch('/api/vehicles', { method: 'POST', body: JSON.stringify(vehicle), headers: {'Content-Type':'application/json'} });
+
+  document.getElementById('success-msg').textContent =
+    `${vehicle.year} ${vehicle.make} ${vehicle.model} is now live in your inventory.`;
+
+  document.getElementById('submit-btn').style.display = 'block';
+  document.getElementById('submit-loading').style.display = 'none';
+
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.getElementById('step-success').classList.add('active');
+  document.getElementById('header-sub').textContent = 'Done';
+  for (let i = 1; i <= 4; i++) { document.getElementById('dot-' + i).className = 'step-dot done'; }
+}
+
+// ─── RESET ────────────────────────────────────────────────
+function reset() {
+  vinData = {};
+  photos = [null, null, null, null];
+  document.getElementById('vin-manual').value = '';
+  document.getElementById('price').value = '';
+  document.getElementById('miles').value = '';
+  document.getElementById('notes').value = '';
+  for (let i = 0; i < 4; i++) {
+    const slot = document.getElementById('slot-' + i);
+    slot.classList.remove('captured');
+    slot.querySelectorAll('img').forEach(el => el.remove());
+    document.getElementById('file-' + i).value = '';
+  }
+  setStep(1);
+  startScanner();
+}
+
+// ─── TOAST ────────────────────────────────────────────────
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.className = 'toast', 3000);
+}
+
+// ─── INIT ─────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  // Try to load ZXing from CDN if not already loaded
+  if (!window.ZXing) {
+    const s = document.createElement('script');
+    s.src = 'https://cdnjs.cloudflare.com/ajax/libs/zxing-js/0.20.0/zxing.min.js';
+    s.onload = startScanner;
+    s.onerror = () => document.getElementById('scan-status').textContent = 'Enter VIN manually below';
+    document.head.appendChild(s);
+  } else {
+    startScanner();
+  }
+});
+</script>
+</body>
+</html>
