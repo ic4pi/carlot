@@ -74,6 +74,9 @@ header{background:var(--white);border-bottom:1px solid var(--border);padding:16p
 .inv-header h2{font-family:'Sora',sans-serif;font-size:28px;font-weight:800;letter-spacing:-0.01em;}
 .inv-count{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gray);}
 .inv-sub{font-size:14px;color:var(--gray);margin-bottom:24px;}
+.demo-banner{display:none;background:var(--navy-tint);border:1px solid var(--border);border-radius:var(--radius);padding:12px 16px;margin-bottom:20px;font-size:13px;color:var(--navy-2);line-height:1.5;}
+.demo-banner.show{display:block;}
+.demo-banner b{color:var(--navy);}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;}
 .card{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--white);transition:box-shadow 0.2s, transform 0.2s, border-color 0.2s;opacity:0;transform:translateY(14px);animation:cardIn 0.5s ease forwards;}
 @keyframes cardIn{to{opacity:1;transform:translateY(0);}}
@@ -148,7 +151,7 @@ footer b{color:var(--white);}
       <a href="tel:6019390075" class="btn btn-outline">Call (601) 939-0075</a>
     </div>
     <div class="factbar">
-      <span class="fact-pill"><b id="fact-count">9</b> vehicles in stock</span>
+      <span class="fact-pill"><b id="fact-count">—</b> vehicles in stock</span>
       <span class="fact-pill">11 Old Hwy 49 S, Flowood, MS</span>
       <span class="fact-pill">Mon–Sat 9–6 · Sun closed</span>
     </div>
@@ -186,6 +189,9 @@ footer b{color:var(--white);}
     <span class="inv-count" id="inv-count"></span>
   </div>
   <p class="inv-sub">Every car priced and ready — no hidden fees.</p>
+  <div class="demo-banner" id="demo-banner">
+    <b>Sample inventory</b> — these demo listings and photos are for preview only. They disappear automatically once you add your first real vehicle in <a href="add-car.html" style="color:var(--navy);font-weight:600">Add Vehicle</a>.
+  </div>
   <div class="grid" id="grid">
     <div class="state"><div class="spin"></div>Loading inventory…</div>
   </div>
@@ -233,10 +239,8 @@ footer b{color:var(--white);}
 
 <footer><b>Auto Mart of Flowood</b> &nbsp;·&nbsp; 11 Old Hwy 49 S, Flowood, MS &nbsp;·&nbsp; (601) 939-0075</footer>
 
+<script src="demo-inventory.js"></script>
 <script>
-const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
-
 function estPayment(price){
   const apr = 0.1299, term = 60, down = 1500;
   const financed = Math.max(price - down, 0);
@@ -247,30 +251,37 @@ function estPayment(price){
 
 const carIconSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l1.5-5A2 2 0 0 1 6.4 6.5h11.2A2 2 0 0 1 19.5 8l1.5 5"/><path d="M3 13h18v4a1 1 0 0 1-1 1h-1.5a1 1 0 0 1-1-1v-1H6.5v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><circle cx="7" cy="13" r="1"/><circle cx="17" cy="13" r="1"/></svg>`;
 
-async function load(){
-  try{
-    const r = await fetch(`${SUPABASE_URL}/rest/v1/vehicles?available=eq.true&order=created_at.desc`, {
-      headers:{ apikey:SUPABASE_ANON_KEY, Authorization:`Bearer ${SUPABASE_ANON_KEY}` }
-    });
-    const all = await r.json();
-    render(all);
-  }catch{
-    document.getElementById('grid').innerHTML = `<div class="state">Call (601) 939-0075 for current inventory.</div>`;
-  }
+async function fetchRealInventory(){
+  const r = await fetch('/api/vehicles');
+  if (!r.ok) throw new Error('inventory fetch failed');
+  const data = await r.json();
+  return Array.isArray(data) ? data : [];
 }
 
-function render(cars){
-  document.getElementById('inv-count').textContent = cars.length + ' vehicles';
-  document.getElementById('fact-count').textContent = cars.length;
-  if(!cars.length){
-    document.getElementById('grid').innerHTML = `<div class="state">Nothing listed right now — call us, more coming in.</div>`;
-    return;
+async function load(){
+  let realCars = [];
+  try {
+    realCars = await fetchRealInventory();
+  } catch {
+    realCars = [];
   }
+
+  const isDemo = realCars.length === 0;
+  const cars = isDemo ? DEMO_INVENTORY : realCars;
+
+  document.getElementById('demo-banner').classList.toggle('show', isDemo);
+  render(cars, isDemo);
+}
+
+function render(cars, isDemo){
+  document.getElementById('inv-count').textContent = cars.length + ' vehicle' + (cars.length === 1 ? '' : 's');
+  document.getElementById('fact-count').textContent = cars.length;
+
   document.getElementById('grid').innerHTML = cars.map((c,i) => `
     <div class="card" style="animation-delay:${Math.min(i*0.05,0.4)}s">
       <div class="card-img">
         ${c.photos?.[0] ? `<img src="${c.photos[0]}" alt="${c.year} ${c.make} ${c.model}" loading="lazy">` : `<div class="no-photo">${carIconSVG}</div>`}
-        ${i<2 ? `<div class="badge-new">Just Listed</div>` : ``}
+        ${!isDemo && i<2 ? `<div class="badge-new">Just Listed</div>` : ``}
         <div class="price-tag">$${parseInt(c.price).toLocaleString()}</div>
       </div>
       <div class="card-body">
