@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Auto Mart of Flowood — Quality Pre-Owned Vehicles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#2C3E6B;
+  --navy-2:#3D527A;
+  --navy-tint:#EEF2F8;
+  --gray:#6B7280;
+  --gray-light:#9CA3AF;
+  --border:#E2E5EA;
+  --white:#FFFFFF;
+  --bg-soft:#F6F7F9;
+  --radius:10px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{color-scheme:light only;}
+body{font-family:'Inter',sans-serif;background:var(--white);color:var(--navy);-webkit-font-smoothing:antialiased;}
+@media (prefers-reduced-motion: reduce){*{animation-duration:0.001ms !important;transition-duration:0.001ms !important;}}
+.mono{font-family:'IBM Plex Mono',monospace;}
+
+/* HEADER */
+header{background:var(--white);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:99;}
+.wordmark{font-family:'Sora',sans-serif;font-weight:800;font-size:19px;line-height:1.05;letter-spacing:-0.01em;color:var(--navy);}
+.wordmark span{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:500;letter-spacing:0.14em;text-transform:uppercase;color:var(--gray);margin-top:3px;}
+.header-actions{display:flex;gap:8px;}
+.btn{display:inline-flex;align-items:center;gap:6px;font-family:'Inter',sans-serif;font-weight:700;font-size:13px;letter-spacing:0.01em;padding:10px 16px;border-radius:7px;text-decoration:none;white-space:nowrap;border:1.5px solid transparent;transition:transform 0.15s, background 0.15s, border-color 0.15s;}
+.btn:active{transform:scale(0.97);}
+.btn-navy{background:var(--navy);color:var(--white);}
+.btn-cta{background:linear-gradient(135deg,#ff2d6f,#ff6b00);color:#fff;border:none;}
+.btn-navy:hover{background:var(--navy-2);}
+.btn-outline{background:var(--white);color:var(--navy);border-color:var(--border);}
+.btn-outline:hover{border-color:var(--navy-2);}
+.header-actions .btn{padding:9px 14px;font-size:12.5px;}
+
+/* HERO — white background */
+.hero{background:var(--white);padding:52px 24px 0;}
+.hero-inner{max-width:720px;margin:0 auto;padding-bottom:40px;}
+.hero-tag{display:inline-flex;align-items:center;gap:8px;background:var(--navy-tint);border:1px solid var(--border);color:var(--navy-2);font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;padding:6px 12px;border-radius:99px;margin-bottom:22px;animation:fadeUp 0.5s ease both;}
+.dot-live{width:7px;height:7px;border-radius:50%;background:var(--navy);animation:pulse 1.8s ease-in-out infinite;}
+@keyframes pulse{0%,100%{opacity:1;transform:scale(1);}50%{opacity:0.45;transform:scale(0.8);}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.hero h1{font-family:'Sora',sans-serif;font-weight:800;font-size:clamp(38px,9vw,58px);line-height:1.04;letter-spacing:-0.015em;color:var(--navy);margin-bottom:18px;animation:fadeUp 0.6s ease both 0.05s;}
+.hero h1 .underline-wrap{position:relative;display:inline-block;}
+.hero h1 .underline-wrap svg{position:absolute;left:0;bottom:-6px;width:100%;height:14px;}
+.hero p{font-size:16px;color:var(--gray);max-width:460px;margin-bottom:26px;line-height:1.55;animation:fadeUp 0.6s ease both 0.1s;}
+.hero-cta{margin-bottom:30px;animation:fadeUp 0.6s ease both 0.15s;display:inline-flex;gap:10px;flex-wrap:wrap;}
+.factbar{display:flex;flex-wrap:wrap;gap:10px;animation:fadeUp 0.6s ease both 0.2s;}
+.fact-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--border);border-radius:99px;padding:7px 13px;font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--navy-2);}
+.fact-pill b{color:var(--navy);}
+
+/* QUICK LINKS */
+.quick{padding:36px 24px 32px;max-width:1040px;margin:0 auto;}
+.quick-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;}
+@media(min-width:760px){.quick-grid{grid-template-columns:repeat(4,1fr);}}
+.qtile{border:1px solid var(--border);border-radius:var(--radius);padding:18px 16px;text-decoration:none;color:var(--navy);transition:border-color 0.18s, transform 0.18s, box-shadow 0.18s;}
+.qtile:hover{border-color:var(--navy-2);transform:translateY(-3px);box-shadow:0 10px 22px rgba(20,33,61,0.12);}
+.qtile-icon{width:38px;height:38px;border-radius:9px;background:var(--navy-tint);display:flex;align-items:center;justify-content:center;margin-bottom:12px;transition:background 0.18s;}
+.qtile:hover .qtile-icon{background:var(--navy);}
+.qtile-icon svg{width:18px;height:18px;stroke:var(--navy);transition:stroke 0.18s;}
+.qtile:hover .qtile-icon svg{stroke:var(--white);}
+.qtile h3{font-family:'Sora',sans-serif;font-size:15px;font-weight:700;margin-bottom:4px;}
+.qtile p{font-size:12.5px;color:var(--gray);line-height:1.4;}
+
+/* INVENTORY */
+.inv{padding:24px 24px 48px;max-width:1040px;margin:0 auto;}
+.inv-header{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:4px;}
+.inv-header h2{font-family:'Sora',sans-serif;font-size:28px;font-weight:800;letter-spacing:-0.01em;}
+.inv-count{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gray);}
+.inv-sub{font-size:14px;color:var(--gray);margin-bottom:24px;}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px;}
+.card{border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;background:var(--white);transition:box-shadow 0.2s, transform 0.2s, border-color 0.2s;opacity:0;transform:translateY(14px);animation:cardIn 0.5s ease forwards;}
+@keyframes cardIn{to{opacity:1;transform:translateY(0);}}
+.card:hover{box-shadow:0 14px 30px rgba(20,33,61,0.14);transform:translateY(-3px);border-color:#D7DEE8;}
+.card-img{position:relative;width:100%;aspect-ratio:4/3;background:var(--bg-soft);overflow:hidden;}
+.card-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.35s;}
+.card:hover .card-img img{transform:scale(1.04);}
+.no-photo{width:100%;height:100%;display:flex;align-items:center;justify-content:center;}
+.no-photo svg{width:34px;height:34px;stroke:var(--gray-light);}
+.price-tag{position:absolute;top:10px;left:-6px;background:var(--navy);color:var(--white);font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:16px;padding:6px 14px 6px 16px;border-radius:0 4px 4px 0;transform:rotate(-3deg);box-shadow:0 4px 10px rgba(20,33,61,0.3);transition:transform 0.2s;}
+.card:hover .price-tag{transform:rotate(0deg) scale(1.04);}
+.price-tag::after{content:'';position:absolute;left:4px;top:-4px;width:6px;height:6px;border-radius:50%;background:rgba(255,255,255,0.55);}
+.badge-new{position:absolute;top:12px;right:12px;background:var(--navy);color:var(--white);font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;padding:5px 9px;border-radius:5px;}
+.card-body{padding:14px 16px 16px;}
+.card-name{font-family:'Sora',sans-serif;font-weight:700;font-size:17px;line-height:1.25;margin-bottom:4px;}
+.card-meta{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--gray);margin-bottom:6px;letter-spacing:0.01em;}
+.card-pay{font-size:12px;color:var(--navy-2);font-weight:700;margin-bottom:8px;}
+.card-notes{font-size:13px;color:var(--gray);line-height:1.4;margin-bottom:14px;}
+.card-actions{display:flex;gap:6px;}
+.card-actions .btn{flex:1;justify-content:center;padding:10px;font-size:12px;letter-spacing:0.04em;text-transform:uppercase;}
+.finance-note{margin-top:20px;font-size:11.5px;color:var(--gray-light);line-height:1.5;}
+.state{grid-column:1/-1;text-align:center;padding:60px 20px;color:var(--gray);font-size:14px;}
+.spin{width:26px;height:26px;border:2px solid var(--border);border-top-color:var(--navy);border-radius:50%;animation:s 0.7s linear infinite;margin:0 auto 14px;}
+@keyframes s{to{transform:rotate(360deg);}}
+
+/* FINANCE BANNER — one navy block, matches their real current site's navy bars */
+.finance{background:var(--navy);color:var(--white);padding:40px 24px;}
+.finance-inner{max-width:1040px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px;}
+.finance h2{font-family:'Sora',sans-serif;font-size:24px;font-weight:800;margin-bottom:6px;}
+.finance p{font-size:14px;color:#C7CEDC;max-width:420px;line-height:1.5;}
+.finance .btn-outline{background:transparent;border-color:rgba(255,255,255,0.3);color:var(--white);}
+
+/* MAP */
+.map-section{padding:40px 24px;background:var(--bg-soft);}
+.map-inner{max-width:1040px;margin:0 auto;display:grid;grid-template-columns:1.2fr 1fr;gap:24px;}
+@media(max-width:760px){.map-inner{grid-template-columns:1fr;}}
+.map-section h2{font-family:'Sora',sans-serif;font-size:24px;font-weight:800;margin-bottom:16px;}
+.map-frame{border-radius:var(--radius);overflow:hidden;height:280px;border:1px solid var(--border);}
+.map-frame iframe{width:100%;height:100%;border:0;display:block;}
+.map-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;align-content:start;}
+.mg-label{font-family:'IBM Plex Mono',monospace;font-size:10.5px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray-light);margin-bottom:5px;}
+.mg-val{font-size:14.5px;color:var(--navy);line-height:1.5;}
+.mg-val a{color:var(--navy-2);text-decoration:none;font-weight:600;}
+
+/* FOOTER */
+footer{background:var(--navy);color:#8C9AB8;text-align:center;padding:18px 20px;font-size:12px;letter-spacing:0.02em;}
+footer b{color:var(--white);}
+
+@media(max-width:480px){.wordmark{font-size:16px;}header{padding:14px 18px;}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wordmark">
+    Auto Mart of Flowood
+    <span>Quality Pre-Owned · Flowood, MS</span>
+  </div>
+  <div class="header-actions">
+    <a href="sms:6019390075" class="btn btn-outline">Text</a>
+    <a href="tel:6019390075" class="btn btn-navy">Call</a>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-tag"><span class="dot-live"></span> Inventory updated today</div>
+    <h1>Good cars.<br>Fair price.<br><span class="underline-wrap">No games.<svg viewBox="0 0 200 14" preserveAspectRatio="none"><path d="M2 9 Q50 2 100 8 T198 6" fill="none" stroke="#14213D" stroke-width="3" stroke-linecap="round"/></svg></span></h1>
+    <p>A small lot in Flowood that keeps it simple — every vehicle priced up front, no haggling required.</p>
+    <div class="hero-cta">
+      <a href="#inventory" class="btn btn-navy">See what's in stock ↓</a>
+      <a href="tel:6019390075" class="btn btn-outline">Call (601) 939-0075</a>
+    </div>
+    <div class="factbar">
+      <span class="fact-pill"><b id="fact-count">9</b> vehicles in stock</span>
+      <span class="fact-pill">11 Old Hwy 49 S, Flowood, MS</span>
+      <span class="fact-pill">Mon–Sat 9–6 · Sun closed</span>
+    </div>
+  </div>
+</section>
+
+<section class="quick">
+  <div class="quick-grid">
+    <a href="#inventory" class="qtile">
+      <div class="qtile-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l1.5-5A2 2 0 0 1 6.4 6.5h11.2A2 2 0 0 1 19.5 8l1.5 5"/><path d="M3 13h18v4a1 1 0 0 1-1 1h-1.5a1 1 0 0 1-1-1v-1H6.5v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><circle cx="7" cy="13" r="1"/><circle cx="17" cy="13" r="1"/></svg></div>
+      <h3>View Inventory</h3>
+      <p>Every car on the lot, priced and ready.</p>
+    </a>
+    <a href="tel:6019390075" class="qtile">
+      <div class="qtile-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1v22M8 5h5.5a3 3 0 1 1 0 6H8m0 6h6.5a3 3 0 1 0 0-6H8"/></svg></div>
+      <h3>Sell a Car</h3>
+      <p>Trading or selling — call for an offer.</p>
+    </a>
+    <a href="tel:6019390075" class="qtile">
+      <div class="qtile-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2h9l3 3v17H6z"/><path d="M15 2v3h3M9 13h6M9 17h6M9 9h2"/></svg></div>
+      <h3>Apply for Credit</h3>
+      <p>Bad credit, no credit — we work with it.</p>
+    </a>
+    <a href="#visit" class="qtile">
+      <div class="qtile-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.3"/></svg></div>
+      <h3>Visit Us</h3>
+      <p>11 Old Hwy 49 S, Flowood, MS.</p>
+    </a>
+  </div>
+</section>
+
+<section class="inv" id="inventory">
+  <div class="inv-header">
+    <h2>In Stock</h2>
+    <span class="inv-count" id="inv-count"></span>
+  </div>
+  <p class="inv-sub">Every car priced and ready — no hidden fees.</p>
+  <div class="grid" id="grid">
+    <div class="state"><div class="spin"></div>Loading inventory…</div>
+  </div>
+  <p class="finance-note">*Estimated payment assumes 60 months, 12.99% APR, $1,500 down. Not an offer of credit — actual terms depend on approved financing.</p>
+</section>
+
+<section class="finance">
+  <div class="finance-inner">
+    <div>
+      <h2>Bad credit? No credit?</h2>
+      <p>Several financing options available for all credit situations. Apply online and we'll call you back same day.</p>
+    </div>
+    <a href="tel:6019390075" class="btn btn-outline">Apply for Credit →</a>
+  </div>
+</section>
+
+<section class="map-section" id="visit">
+  <div class="map-inner">
+    <div>
+      <h2>Find Us</h2>
+      <div class="map-frame">
+        <iframe src="https://maps.google.com/maps?q=11+Old+Hwy+49+S,+Flowood,+MS+39232&output=embed" allowfullscreen loading="lazy"></iframe>
+      </div>
+    </div>
+    <div class="map-grid">
+      <div>
+        <div class="mg-label">Address</div>
+        <div class="mg-val">11 Old Hwy 49 S<br>Flowood, MS 39232</div>
+      </div>
+      <div>
+        <div class="mg-label">Phone</div>
+        <div class="mg-val"><a href="tel:6019390075">(601) 939-0075</a></div>
+      </div>
+      <div>
+        <div class="mg-label">Hours</div>
+        <div class="mg-val">Mon–Sat 9am–6pm<br>Sunday closed</div>
+      </div>
+      <div>
+        <div class="mg-label">Directions</div>
+        <div class="mg-val"><a href="https://maps.google.com/?q=11+Old+Hwy+49+S,+Flowood,+MS+39232" target="_blank">Open in Maps →</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer><b>Auto Mart of Flowood</b> &nbsp;·&nbsp; 11 Old Hwy 49 S, Flowood, MS &nbsp;·&nbsp; (601) 939-0075</footer>
+
+<script>
+const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
+function estPayment(price){
+  const apr = 0.1299, term = 60, down = 1500;
+  const financed = Math.max(price - down, 0);
+  const r = apr/12;
+  const pmt = financed * r / (1 - Math.pow(1+r, -term));
+  return Math.round(pmt);
+}
+
+const carIconSVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M3 13l1.5-5A2 2 0 0 1 6.4 6.5h11.2A2 2 0 0 1 19.5 8l1.5 5"/><path d="M3 13h18v4a1 1 0 0 1-1 1h-1.5a1 1 0 0 1-1-1v-1H6.5v1a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><circle cx="7" cy="13" r="1"/><circle cx="17" cy="13" r="1"/></svg>`;
+
+async function load(){
+  try{
+    const r = await fetch(`${SUPABASE_URL}/rest/v1/vehicles?available=eq.true&order=created_at.desc`, {
+      headers:{ apikey:SUPABASE_ANON_KEY, Authorization:`Bearer ${SUPABASE_ANON_KEY}` }
+    });
+    const all = await r.json();
+    render(all);
+  }catch{
+    document.getElementById('grid').innerHTML = `<div class="state">Call (601) 939-0075 for current inventory.</div>`;
+  }
+}
+
+function render(cars){
+  document.getElementById('inv-count').textContent = cars.length + ' vehicles';
+  document.getElementById('fact-count').textContent = cars.length;
+  if(!cars.length){
+    document.getElementById('grid').innerHTML = `<div class="state">Nothing listed right now — call us, more coming in.</div>`;
+    return;
+  }
+  document.getElementById('grid').innerHTML = cars.map((c,i) => `
+    <div class="card" style="animation-delay:${Math.min(i*0.05,0.4)}s">
+      <div class="card-img">
+        ${c.photos?.[0] ? `<img src="${c.photos[0]}" alt="${c.year} ${c.make} ${c.model}" loading="lazy">` : `<div class="no-photo">${carIconSVG}</div>`}
+        ${i<2 ? `<div class="badge-new">Just Listed</div>` : ``}
+        <div class="price-tag">$${parseInt(c.price).toLocaleString()}</div>
+      </div>
+      <div class="card-body">
+        <div class="card-name">${c.year} ${c.make} ${c.model}</div>
+        <div class="card-meta">${parseInt(c.miles).toLocaleString()} MI${c.drive && c.drive!=='—' ? ' · '+c.drive.toUpperCase() : ''}${c.engine && c.engine!=='—' ? ' · '+c.engine.toUpperCase() : ''}</div>
+        <div class="card-pay">Est. $${estPayment(parseInt(c.price))}/mo*</div>
+        ${c.notes ? `<div class="card-notes">${c.notes}</div>` : ''}
+        <div class="card-actions">
+          <a class="btn btn-cta" href="tel:6019390075">Call</a>
+          <a class="btn btn-outline" href="sms:6019390075">Text</a>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+load();
+</script>
+</body>
+</html>

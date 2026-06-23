@@ -3,22 +3,42 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Add Vehicle</title>
+<meta name="color-scheme" content="light">
+<title>Add Vehicle — Auto Mart of Flowood</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/zxing-js/0.20.0/zxing.min.js"></script>
 <style>
+  :root{
+    --navy:#2C3E6B;
+    --navy-2:#3D527A;
+    --navy-deep:#1B2A4D;
+    --navy-tint:#EEF2F8;
+    --gray:#6B7280;
+    --gray-light:#9CA3AF;
+    --border:#E2E5EA;
+    --white:#FFFFFF;
+    --bg-soft:#F9FAFB;
+    --orange:#E8772E;
+    --orange-tint:#FDF1E7;
+    --radius:10px;
+  }
+
+  html{ color-scheme: light only; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
   body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    background: #0f0f0f;
-    color: #f0f0f0;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--white) !important;
+    color: var(--navy);
+    -webkit-font-smoothing: antialiased;
     min-height: 100vh;
     padding: 0 0 80px;
   }
 
   header {
-    background: #1a1a1a;
-    border-bottom: 2px solid #e8194b;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
     padding: 16px 20px;
     position: sticky;
     top: 0;
@@ -26,66 +46,72 @@
   }
 
   header h1 {
+    font-family: 'Sora', sans-serif;
     font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: #fff;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: var(--navy-deep);
   }
 
   header p {
-    font-size: 12px;
-    color: #888;
-    margin-top: 2px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    color: var(--navy-2);
+    margin-top: 3px;
   }
 
   /* STEP INDICATOR */
   .steps {
     display: flex;
-    padding: 16px 20px;
+    padding: 14px 20px;
     gap: 8px;
-    background: #141414;
-    border-bottom: 1px solid #222;
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
   }
 
   .step-dot {
     flex: 1;
     height: 4px;
     border-radius: 2px;
-    background: #2a2a2a;
+    background: var(--border);
     transition: background 0.3s;
   }
 
-  .step-dot.active { background: #e8194b; }
-  .step-dot.done { background: #4caf50; }
+  .step-dot.active { background: var(--navy); }
+  .step-dot.done { background: var(--orange); }
 
   /* SECTIONS */
   .section {
     display: none;
     padding: 24px 20px;
+    background: var(--white);
   }
 
   .section.active { display: block; }
 
   .section-label {
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
-    font-weight: 700;
+    font-weight: 600;
     letter-spacing: 0.12em;
     text-transform: uppercase;
-    color: #e8194b;
+    color: var(--navy-2);
     margin-bottom: 8px;
   }
 
   .section-title {
+    font-family: 'Sora', sans-serif;
     font-size: 22px;
-    font-weight: 700;
-    color: #fff;
+    font-weight: 800;
+    color: var(--navy-deep);
     margin-bottom: 6px;
+    letter-spacing: -0.01em;
   }
 
   .section-sub {
     font-size: 14px;
-    color: #888;
+    color: var(--navy-2);
     margin-bottom: 24px;
     line-height: 1.5;
   }
@@ -96,9 +122,10 @@
     width: 100%;
     border-radius: 12px;
     overflow: hidden;
-    background: #000;
+    background: var(--navy-deep);
     aspect-ratio: 16/9;
     margin-bottom: 16px;
+    border: 1px solid var(--border);
   }
 
   #video {
@@ -119,7 +146,7 @@
   .scan-box {
     width: 80%;
     height: 60px;
-    border: 2px solid #e8194b;
+    border: 2px solid var(--orange);
     border-radius: 6px;
     position: relative;
   }
@@ -130,7 +157,7 @@
     left: 0;
     right: 0;
     height: 2px;
-    background: rgba(232, 25, 75, 0.7);
+    background: rgba(232, 119, 46, 0.85);
     animation: scanline 2s ease-in-out infinite;
   }
 
@@ -145,8 +172,8 @@
     left: 0; right: 0;
     text-align: center;
     font-size: 12px;
-    color: rgba(255,255,255,0.7);
-    background: rgba(0,0,0,0.5);
+    color: #fff;
+    background: rgba(27,42,77,0.7);
     padding: 4px;
   }
 
@@ -155,39 +182,43 @@
     display: block;
     width: 100%;
     padding: 16px;
-    border: none;
+    border: 1.5px solid transparent;
     border-radius: 10px;
-    font-size: 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15.5px;
     font-weight: 700;
     cursor: pointer;
     text-align: center;
-    transition: opacity 0.2s, transform 0.1s;
-    letter-spacing: 0.03em;
+    transition: opacity 0.2s, transform 0.1s, background 0.15s, border-color 0.15s;
+    letter-spacing: 0.01em;
     -webkit-tap-highlight-color: transparent;
   }
 
-  .btn:active { transform: scale(0.98); opacity: 0.85; }
+  .btn:active { transform: scale(0.98); opacity: 0.9; }
 
   .btn-primary {
-    background: #e8194b;
+    background: var(--navy);
     color: #fff;
   }
+  .btn-primary:hover{ background: var(--navy-2); }
 
   .btn-secondary {
-    background: #2a2a2a;
-    color: #ccc;
+    background: var(--white);
+    color: var(--navy);
+    border-color: var(--border);
     margin-top: 10px;
   }
 
   .btn-success {
-    background: #4caf50;
+    background: var(--orange);
     color: #fff;
   }
+  .btn-success:hover{ background: #D2641F; }
 
   .btn-ghost {
     background: transparent;
-    color: #888;
-    border: 1px solid #333;
+    color: var(--navy-2);
+    border: 1px solid var(--border);
     margin-top: 10px;
     font-size: 14px;
     padding: 12px;
@@ -200,9 +231,10 @@
 
   .field label {
     display: block;
-    font-size: 12px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
     font-weight: 600;
-    color: #888;
+    color: var(--navy-2);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     margin-bottom: 6px;
@@ -210,10 +242,11 @@
 
   .field input, .field textarea, .field select {
     width: 100%;
-    background: #1e1e1e;
-    border: 1px solid #333;
+    background: var(--white);
+    border: 1.5px solid var(--border);
     border-radius: 8px;
-    color: #fff;
+    color: var(--navy-deep);
+    font-family: 'Inter', sans-serif;
     font-size: 16px;
     padding: 14px 16px;
     outline: none;
@@ -222,27 +255,28 @@
   }
 
   .field input:focus, .field textarea:focus, .field select:focus {
-    border-color: #e8194b;
+    border-color: var(--navy-2);
   }
 
   .field input.filled {
-    border-color: #4caf50;
-    background: #1a2a1a;
+    border-color: var(--orange);
+    background: var(--orange-tint);
   }
 
   /* VIN DISPLAY */
   .vin-result {
-    background: #1a2a1a;
-    border: 1px solid #4caf50;
+    background: var(--navy-tint);
+    border: 1px solid var(--navy-2);
     border-radius: 10px;
     padding: 16px;
     margin-bottom: 20px;
   }
 
   .vin-result .vin-code {
-    font-family: monospace;
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 13px;
-    color: #4caf50;
+    color: var(--navy);
+    font-weight: 700;
     margin-bottom: 12px;
     letter-spacing: 0.05em;
   }
@@ -254,14 +288,16 @@
   }
 
   .vin-field {
-    background: #0f1f0f;
+    background: var(--white);
+    border: 1px solid var(--border);
     border-radius: 6px;
     padding: 10px 12px;
   }
 
   .vin-field .vf-label {
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 10px;
-    color: #666;
+    color: var(--navy-2);
     text-transform: uppercase;
     letter-spacing: 0.08em;
     margin-bottom: 2px;
@@ -269,8 +305,8 @@
 
   .vin-field .vf-value {
     font-size: 14px;
-    font-weight: 600;
-    color: #e0e0e0;
+    font-weight: 700;
+    color: var(--navy-deep);
   }
 
   /* PHOTOS */
@@ -284,7 +320,7 @@
   .photo-slot {
     aspect-ratio: 4/3;
     border-radius: 10px;
-    border: 2px dashed #333;
+    border: 2px dashed var(--border);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -292,14 +328,14 @@
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    background: #1a1a1a;
+    background: var(--bg-soft);
     transition: border-color 0.2s;
     -webkit-tap-highlight-color: transparent;
   }
 
   .photo-slot.captured {
     border-style: solid;
-    border-color: #4caf50;
+    border-color: var(--orange);
   }
 
   .photo-slot img {
@@ -311,8 +347,9 @@
   }
 
   .photo-slot .slot-label {
+    font-family: 'IBM Plex Mono', monospace;
     font-size: 11px;
-    color: #666;
+    color: var(--navy-2);
     text-align: center;
     padding: 8px;
     text-transform: uppercase;
@@ -322,14 +359,14 @@
   .photo-slot .slot-icon {
     font-size: 24px;
     margin-bottom: 4px;
-    color: #444;
+    color: var(--gray-light);
   }
 
   .photo-slot .remove-photo {
     position: absolute;
     top: 6px;
     right: 6px;
-    background: rgba(232,25,75,0.9);
+    background: var(--orange);
     color: #fff;
     border: none;
     border-radius: 50%;
@@ -348,7 +385,7 @@
   .photo-slot .slot-overlay {
     position: absolute;
     inset: 0;
-    background: rgba(0,0,0,0.4);
+    background: rgba(27,42,77,0.35);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -365,15 +402,18 @@
     align-items: center;
     gap: 10px;
     margin: 20px 0;
-    color: #444;
-    font-size: 12px;
+    color: var(--gray-light);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
   }
 
   .divider::before, .divider::after {
     content: '';
     flex: 1;
     height: 1px;
-    background: #2a2a2a;
+    background: var(--border);
   }
 
   /* SUCCESS */
@@ -388,8 +428,8 @@
     display: inline-block;
     width: 16px;
     height: 16px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: #fff;
+    border: 2px solid var(--border);
+    border-top-color: var(--navy);
     border-radius: 50%;
     animation: spin 0.7s linear infinite;
     margin-right: 8px;
@@ -403,7 +443,7 @@
     align-items: center;
     justify-content: center;
     padding: 20px;
-    color: #888;
+    color: var(--navy-2);
     font-size: 14px;
   }
 
@@ -412,8 +452,8 @@
     position: fixed;
     bottom: 20px;
     left: 20px; right: 20px;
-    background: #1e1e1e;
-    border: 1px solid #333;
+    background: var(--navy-deep);
+    border: 1px solid var(--navy-2);
     border-radius: 10px;
     padding: 14px 16px;
     font-size: 14px;
@@ -429,8 +469,8 @@
     opacity: 1;
   }
 
-  .toast.error { border-color: #e8194b; }
-  .toast.success { border-color: #4caf50; }
+  .toast.error { border-color: #D9534F; }
+  .toast.success { border-color: var(--orange); }
 </style>
 </head>
 <body>
@@ -468,7 +508,7 @@
   <div class="field">
     <label>VIN Number</label>
     <input type="text" id="vin-manual" placeholder="1HGBH41JXMN109186" maxlength="17"
-      style="text-transform:uppercase; font-family:monospace; letter-spacing:0.08em">
+      style="text-transform:uppercase; font-family:'IBM Plex Mono',monospace; letter-spacing:0.08em">
   </div>
 
   <button class="btn btn-primary" id="vin-submit-btn" onclick="submitVIN()">Look Up VIN</button>
@@ -550,7 +590,7 @@
   <div class="section-title">Ready to Add</div>
   <div class="section-sub">Everything looks good? Hit submit.</div>
 
-  <div id="review-summary" style="background:#1e1e1e; border-radius:10px; padding:16px; margin-bottom:20px;"></div>
+  <div id="review-summary" style="background:var(--bg-soft); border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:20px;"></div>
 
   <div id="review-photos" style="display:flex; gap:8px; margin-bottom:20px; overflow-x:auto;"></div>
 
@@ -735,16 +775,16 @@ function goToReview() {
   const notes = document.getElementById('notes').value;
 
   document.getElementById('review-summary').innerHTML = `
-    <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:12px">
+    <div style="font-family:'Sora',sans-serif;font-size:20px;font-weight:800;color:var(--navy-deep);margin-bottom:12px">
       ${vinData.year} ${vinData.make} ${vinData.model}
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:14px">
-      <div><span style="color:#888">Price</span><br><strong style="color:#4caf50;font-size:18px">$${parseInt(price).toLocaleString()}</strong></div>
-      <div><span style="color:#888">Miles</span><br><strong>${miles}</strong></div>
-      <div><span style="color:#888">Trim</span><br>${vinData.trim}</div>
-      <div><span style="color:#888">Drive</span><br>${vinData.drive}</div>
+      <div><span style="color:var(--navy-2)">Price</span><br><strong style="color:var(--orange);font-size:18px">$${parseInt(price).toLocaleString()}</strong></div>
+      <div><span style="color:var(--navy-2)">Miles</span><br><strong>${miles}</strong></div>
+      <div><span style="color:var(--navy-2)">Trim</span><br>${vinData.trim}</div>
+      <div><span style="color:var(--navy-2)">Drive</span><br>${vinData.drive}</div>
     </div>
-    ${notes ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid #2a2a2a;font-size:13px;color:#aaa">${notes}</div>` : ''}
+    ${notes ? `<div style="margin-top:12px;padding-top:12px;border-top:1px solid var(--border);font-size:13px;color:var(--navy-2)">${notes}</div>` : ''}
   `;
 
   const photoRow = document.getElementById('review-photos');
@@ -755,8 +795,8 @@ function goToReview() {
     const wrap = document.createElement('div');
     wrap.style.cssText = 'flex:0 0 120px;';
     wrap.innerHTML = `
-      <img src="${p}" style="width:120px;height:80px;object-fit:cover;border-radius:8px;border:1px solid #333">
-      <div style="font-size:10px;color:#666;text-align:center;margin-top:4px;text-transform:uppercase">${labels[i]}</div>
+      <img src="${p}" style="width:120px;height:80px;object-fit:cover;border-radius:8px;border:1px solid var(--border)">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--navy-2);text-align:center;margin-top:4px;text-transform:uppercase">${labels[i]}</div>
     `;
     photoRow.appendChild(wrap);
   });
