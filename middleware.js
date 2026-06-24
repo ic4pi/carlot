@@ -17,5 +17,5 @@ export default function middleware(request) {
 }
 
 export const config = {
-  matcher: ['/', '/dash', '/dash/', '/add-car']
+  matcher: ['/', '/dash', '/dash/', '/add-car', '/dash/settings.html']
 };

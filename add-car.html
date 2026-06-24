@@ -471,9 +471,12 @@
 
   .toast.error { border-color: #D9534F; }
   .toast.success { border-color: var(--orange); }
+
+  body.auth-pending { display: none; }
 </style>
+<script src="/dash/auth.js"></script>
 </head>
-<body>
+<body class="auth-pending">
 
 <header>
   <h1>Add Vehicle</h1>
@@ -849,6 +852,11 @@ async function submitCar() {
     document.getElementById('submit-loading').style.display = 'none';
   }
 }
+
+// ─── AUTH GUARD ───────────────────────────────────────────
+CarlotAuth.requireAuth().then((session) => {
+  if (session) document.body.classList.remove('auth-pending');
+});
 
 // ─── NAV ──────────────────────────────────────────────────
 function goDashboard() {

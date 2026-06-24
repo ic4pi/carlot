@@ -9,66 +9,123 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
 <style>
   :root{
-    --navy:#2C3E6B;
-    --navy-2:#3D527A;
-    --navy-deep:#1B2A4D;
-    --navy-tint:#EEF2F8;
-    --gray:#6B7280;
-    --border:#E2E5EA;
-    --white:#FFFFFF;
-    --bg-soft:#F6F7F9;
-    --orange:#E8772E;
-    --radius:10px;
+    --navy:#2C3E6B;--navy-2:#3D527A;--navy-deep:#1B2A4D;--navy-tint:#EEF2F8;
+    --gray:#6B7280;--border:#E2E5EA;--white:#FFFFFF;--bg-soft:#F6F7F9;--orange:#E8772E;--radius:10px;
   }
   *{box-sizing:border-box;margin:0;padding:0;}
   body{font-family:'Inter',sans-serif;background:var(--bg-soft);color:var(--navy-deep);min-height:100vh;-webkit-font-smoothing:antialiased;}
-  header{background:var(--white);border-bottom:1px solid var(--border);padding:16px 20px;}
+  header{background:var(--white);border-bottom:1px solid var(--border);padding:16px 20px;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;}
   header h1{font-family:'Sora',sans-serif;font-size:20px;font-weight:800;}
   header p{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--navy-2);margin-top:4px;}
+  .role-badge{font-family:'IBM Plex Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;background:var(--navy-tint);border:1px solid var(--border);padding:5px 9px;border-radius:99px;color:var(--navy-2);}
+  .role-badge.admin{background:#FDF1E7;border-color:var(--orange);color:#B45309;}
+  .logout-btn{background:none;border:none;color:var(--gray);font-size:12px;font-weight:600;cursor:pointer;margin-top:6px;}
   main{max-width:480px;margin:0 auto;padding:24px 20px 40px;}
   .card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:14px;}
   .stat{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gray);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;}
   .stat-val{font-family:'Sora',sans-serif;font-size:32px;font-weight:800;color:var(--navy);}
-  .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:18px;border:none;border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:16px;font-weight:700;text-decoration:none;cursor:pointer;transition:opacity 0.15s,transform 0.1s;}
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:18px;border:none;border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:16px;font-weight:700;text-decoration:none;cursor:pointer;transition:transform 0.1s;margin-bottom:12px;}
   .btn:active{transform:scale(0.98);}
-  .btn-primary{background:var(--orange);color:#fff;margin-bottom:12px;}
+  .btn-primary{background:var(--orange);color:#fff;}
   .btn-secondary{background:var(--white);color:var(--navy);border:1.5px solid var(--border);}
-  .btn-navy{background:var(--navy);color:#fff;}
-  .steps{margin-top:16px;font-size:13px;color:var(--gray);line-height:1.6;}
+  .btn-ghost{background:transparent;color:var(--navy-2);border:1.5px solid var(--border);font-size:14px;padding:14px;}
+  .steps{font-size:13px;color:var(--gray);line-height:1.6;}
   .steps b{color:var(--navy);}
+  .hidden{display:none !important;}
+
+  #login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px 20px;}
+  .login-box{background:var(--white);border:1px solid var(--border);border-radius:14px;padding:28px 24px;width:100%;max-width:380px;box-shadow:0 12px 32px rgba(20,33,61,0.08);}
+  .login-box h2{font-family:'Sora',sans-serif;font-size:22px;font-weight:800;margin-bottom:6px;}
+  .login-box .sub{font-size:14px;color:var(--gray);margin-bottom:22px;line-height:1.5;}
+  .field{margin-bottom:14px;}
+  .field label{display:block;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.08em;color:var(--navy-2);margin-bottom:6px;}
+  .field input{width:100%;border:1.5px solid var(--border);border-radius:8px;padding:14px 16px;font-size:16px;outline:none;}
+  .field input:focus{border-color:var(--navy-2);}
+  .login-hint{font-size:12px;color:var(--gray);margin-top:14px;line-height:1.5;}
+  .error{color:#B45309;font-size:13px;margin-top:10px;min-height:18px;}
 </style>
 </head>
 <body>
 
-<header>
-  <h1>Staff Dashboard</h1>
-  <p>Auto Mart of Flowood</p>
-</header>
-
-<main>
-  <div class="card">
-    <div class="stat">Vehicles listed</div>
-    <div class="stat-val" id="count">—</div>
+<div id="login-screen">
+  <div class="login-box">
+    <h2>Staff Login</h2>
+    <p class="sub">Auto Mart of Flowood — enter your manager or staff password.</p>
+    <form id="login-form">
+      <div class="field">
+        <label>Password</label>
+        <input type="password" id="login-password" placeholder="Enter password" autocomplete="current-password" required>
+      </div>
+      <button type="submit" class="btn btn-primary" style="margin-bottom:0">Unlock Dashboard</button>
+      <div class="error" id="login-error"></div>
+    </form>
+    <p class="login-hint"><b>Manager</b> password unlocks full access including password settings.<br><b>Staff</b> password unlocks add-vehicle only.</p>
   </div>
+</div>
 
-  <a href="/add-car.html" class="btn btn-primary">+ Add Vehicle</a>
-  <a href="#" id="public-site" class="btn btn-secondary">View Public Site →</a>
+<div id="app" class="hidden">
+  <header>
+    <div>
+      <h1>Staff Dashboard</h1>
+      <p>Auto Mart of Flowood</p>
+      <button class="logout-btn" type="button" id="logout-btn">Sign out</button>
+    </div>
+    <span class="role-badge" id="role-badge">Staff</span>
+  </header>
 
-  <div class="card steps">
-    <b>Add a car in 4 steps:</b><br>
-    1. Scan VIN barcode<br>
-    2. Confirm details + price<br>
-    3. Take photos<br>
-    4. Submit to inventory
-  </div>
-</main>
+  <main>
+    <div class="card">
+      <div class="stat">Vehicles listed</div>
+      <div class="stat-val" id="count">—</div>
+    </div>
 
+    <a href="/add-car.html" class="btn btn-primary" id="add-car-link">+ Add Vehicle</a>
+    <a href="#" id="public-site" class="btn btn-secondary">View Public Site →</a>
+    <a href="/dash/settings.html" class="btn btn-ghost admin-only hidden" id="settings-link">Password Settings</a>
+
+    <div class="card steps">
+      <b>Add a car in 4 steps:</b><br>
+      1. Scan VIN barcode<br>
+      2. Confirm details + price<br>
+      3. Take photos<br>
+      4. Submit to inventory
+    </div>
+  </main>
+</div>
+
+<script src="/dash/auth.js"></script>
 <script>
-  // Public site = same project without dash. subdomain
+  const loginScreen = document.getElementById('login-screen');
+  const app = document.getElementById('app');
+  const loginForm = document.getElementById('login-form');
+  const loginError = document.getElementById('login-error');
+
   const host = location.hostname;
   const publicHost = host.startsWith('dash.') ? host.replace(/^dash\./, '') : host;
   document.getElementById('public-site').href =
     `${location.protocol}//${publicHost}${location.port ? ':' + location.port : ''}/`;
+
+  // On dash subdomain use /add-car (clean URL)
+  if (host.startsWith('dash.')) {
+    document.getElementById('add-car-link').href = '/add-car';
+  }
+
+  function showApp(session) {
+    loginScreen.classList.add('hidden');
+    app.classList.remove('hidden');
+    const badge = document.getElementById('role-badge');
+    badge.textContent = session.label || session.role;
+    if (session.role === 'admin') {
+      badge.classList.add('admin');
+      document.getElementById('settings-link').classList.remove('hidden');
+    }
+    loadCount();
+  }
+
+  function showLogin() {
+    loginScreen.classList.remove('hidden');
+    app.classList.add('hidden');
+  }
 
   async function loadCount() {
     try {
@@ -81,7 +138,31 @@
     }
   }
 
-  loadCount();
+  loginForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    loginError.textContent = '';
+    const password = document.getElementById('login-password').value;
+    try {
+      const session = await CarlotAuth.login(password);
+      showApp(session);
+      const params = new URLSearchParams(location.search);
+      const next = params.get('next');
+      if (next) location.href = next;
+    } catch (err) {
+      loginError.textContent = err.message || 'Wrong password';
+    }
+  });
+
+  document.getElementById('logout-btn').addEventListener('click', () => {
+    CarlotAuth.logout();
+    showLogin();
+    document.getElementById('login-password').value = '';
+  });
+
+  CarlotAuth.verify().then((session) => {
+    if (session) showApp(session);
+    else showLogin();
+  });
 </script>
 </body>
 </html>
