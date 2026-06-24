@@ -608,7 +608,7 @@
   <div class="section-sub" style="text-align:center; margin-top:8px" id="success-msg"></div>
   <br>
   <button class="btn btn-primary" onclick="reset()">Add Another Vehicle</button>
-  <button class="btn btn-secondary" onclick="window.location.href='/'">Back to Dashboard</button>
+  <button class="btn btn-secondary" onclick="goDashboard()">Back to Dashboard</button>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -847,6 +847,16 @@ async function submitCar() {
     document.getElementById('submit-btn').style.display = 'block';
   } finally {
     document.getElementById('submit-loading').style.display = 'none';
+  }
+}
+
+// ─── NAV ──────────────────────────────────────────────────
+function goDashboard() {
+  const host = location.hostname;
+  if (host.startsWith('dash.')) {
+    window.location.href = '/';
+  } else {
+    window.location.href = '/dash/index.html';
   }
 }
 

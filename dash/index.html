@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Staff Dashboard — Auto Mart of Flowood</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#2C3E6B;
+    --navy-2:#3D527A;
+    --navy-deep:#1B2A4D;
+    --navy-tint:#EEF2F8;
+    --gray:#6B7280;
+    --border:#E2E5EA;
+    --white:#FFFFFF;
+    --bg-soft:#F6F7F9;
+    --orange:#E8772E;
+    --radius:10px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{font-family:'Inter',sans-serif;background:var(--bg-soft);color:var(--navy-deep);min-height:100vh;-webkit-font-smoothing:antialiased;}
+  header{background:var(--white);border-bottom:1px solid var(--border);padding:16px 20px;}
+  header h1{font-family:'Sora',sans-serif;font-size:20px;font-weight:800;}
+  header p{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--navy-2);margin-top:4px;}
+  main{max-width:480px;margin:0 auto;padding:24px 20px 40px;}
+  .card{background:var(--white);border:1px solid var(--border);border-radius:var(--radius);padding:20px;margin-bottom:14px;}
+  .stat{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gray);text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;}
+  .stat-val{font-family:'Sora',sans-serif;font-size:32px;font-weight:800;color:var(--navy);}
+  .btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;padding:18px;border:none;border-radius:var(--radius);font-family:'Inter',sans-serif;font-size:16px;font-weight:700;text-decoration:none;cursor:pointer;transition:opacity 0.15s,transform 0.1s;}
+  .btn:active{transform:scale(0.98);}
+  .btn-primary{background:var(--orange);color:#fff;margin-bottom:12px;}
+  .btn-secondary{background:var(--white);color:var(--navy);border:1.5px solid var(--border);}
+  .btn-navy{background:var(--navy);color:#fff;}
+  .steps{margin-top:16px;font-size:13px;color:var(--gray);line-height:1.6;}
+  .steps b{color:var(--navy);}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Staff Dashboard</h1>
+  <p>Auto Mart of Flowood</p>
+</header>
+
+<main>
+  <div class="card">
+    <div class="stat">Vehicles listed</div>
+    <div class="stat-val" id="count">—</div>
+  </div>
+
+  <a href="/add-car.html" class="btn btn-primary">+ Add Vehicle</a>
+  <a href="#" id="public-site" class="btn btn-secondary">View Public Site →</a>
+
+  <div class="card steps">
+    <b>Add a car in 4 steps:</b><br>
+    1. Scan VIN barcode<br>
+    2. Confirm details + price<br>
+    3. Take photos<br>
+    4. Submit to inventory
+  </div>
+</main>
+
+<script>
+  // Public site = same project without dash. subdomain
+  const host = location.hostname;
+  const publicHost = host.startsWith('dash.') ? host.replace(/^dash\./, '') : host;
+  document.getElementById('public-site').href =
+    `${location.protocol}//${publicHost}${location.port ? ':' + location.port : ''}/`;
+
+  async function loadCount() {
+    try {
+      const r = await fetch('/api/vehicles');
+      if (!r.ok) throw new Error();
+      const data = await r.json();
+      document.getElementById('count').textContent = Array.isArray(data) ? data.length : '0';
+    } catch {
+      document.getElementById('count').textContent = '—';
+    }
+  }
+
+  loadCount();
+</script>
+</body>
+</html>
