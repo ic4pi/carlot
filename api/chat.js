@@ -5,7 +5,9 @@ const BUSINESS = {
   address: '11 Old Hwy 49 S, Flowood, MS 39232',
   phone: '(601) 939-0075',
   hours: 'Monday–Saturday 9am–6pm, Sunday closed',
-  financing: 'Several financing options available for all credit situations, including bad credit and no credit. Call to apply.'
+  financing: 'Several financing options available for all credit situations, including bad credit and no credit. Call to apply.',
+  mapsUrl: 'https://maps.google.com/?q=11+Old+Hwy+49+S,+Flowood,+MS+39232',
+  directions: `We are at 11 Old Hwy 49 S in Flowood, MS 39232 — on Old Highway 49 South in the Jackson metro area (Rankin County). From I-55, take the Flowood / Lakeland Drive exit and head toward Old Hwy 49 S. Look for Auto Mart of Flowood on Old Hwy 49 S. Google Maps link: https://maps.google.com/?q=11+Old+Hwy+49+S,+Flowood,+MS+39232`
 };
 
 function buildSystemPrompt(inventoryText, isDemo) {
@@ -65,29 +67,29 @@ export default async function handler(req, res) {
         .map((m) => ({ role: m.role, content: String(m.content).slice(0, 2000) }))
     ];
 
-    const openaiRes = await fetch('https://api.openai.com/v1/chat/completions', {
+    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.OPENAI_API_KEY}`
+        Authorization: `Bearer ${process.env.GROQ_API_KEY}`
       },
       body: JSON.stringify({
-        model: 'gpt-4o-mini',
+        model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
         messages: apiMessages,
         max_tokens: 500,
         temperature: 0.6
       })
     });
 
-    if (!openaiRes.ok) {
-      const err = await openaiRes.json().catch(() => ({}));
-      console.error('OpenAI error:', err);
+    if (!groqRes.ok) {
+      const err = await groqRes.json().catch(() => ({}));
+      console.error('Groq error:', err);
       return res.status(502).json({
         error: 'Sorry, I had trouble answering. Please call (601) 939-0075.'
       });
     }
 
-    const data = await openaiRes.json();
+    const data = await groqRes.json();
     const reply = data.choices?.[0]?.message?.content?.trim();
 
     if (!reply) {
