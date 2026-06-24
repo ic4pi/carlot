@@ -2,7 +2,7 @@
   const QUICK_PROMPTS = [
     "What's in stock?",
     'What are your hours?',
-    'Do you finance bad credit?'
+    'How do I get there?'
   ];
 
   const style = document.createElement('style');
