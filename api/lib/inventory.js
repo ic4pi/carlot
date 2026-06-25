@@ -24,8 +24,8 @@ export function formatInventoryForPrompt(cars, isDemo) {
   }
 
   const header = isDemo
-    ? 'SAMPLE INVENTORY (demo listings for preview — not real cars on the lot yet):'
-    : 'CURRENT INVENTORY:';
+    ? 'SAMPLE INVENTORY (demo only — dealer has not uploaded real cars yet):'
+    : 'CURRENT INVENTORY (on the lot now — use this data confidently):';
 
   const lines = cars.map((c) => {
     const name = [c.year, c.make, c.model, c.trim].filter(Boolean).join(' ');

@@ -57,7 +57,7 @@
     panel.classList.add('open');
     if (!greeted) {
       greeted = true;
-      addMessage('bot', "Hi! I'm the Auto Mart assistant. Ask me what's in stock, our hours, or how to find us.");
+      addMessage('bot', "Hi! I'm the Auto Mart assistant. Ask about our inventory, hours (Mon–Fri 10–5), or directions — I'll ask where you're coming from to help with directions.");
       renderQuickPrompts();
     }
     input.focus();
