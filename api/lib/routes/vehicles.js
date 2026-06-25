@@ -1,6 +1,11 @@
-import { supabase } from '../supabase.js';
+import { getSupabase } from '../supabase.js';
 
 export async function handleVehicles(req, res) {
+  const supabase = getSupabase();
+  if (!supabase) {
+    return res.status(503).json({ error: 'Database not configured' });
+  }
+
   if (req.method === 'GET') {
     const { data, error } = await supabase
       .from('vehicles')

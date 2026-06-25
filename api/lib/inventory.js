@@ -1,9 +1,10 @@
-import { supabase } from './supabase.js';
+import { getSupabase } from './supabase.js';
 import { DEMO_INVENTORY } from './demo-inventory.js';
 
 export async function getInventory() {
   try {
-    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+    const supabase = getSupabase();
+    if (!supabase) {
       return { cars: DEMO_INVENTORY, isDemo: true };
     }
 
