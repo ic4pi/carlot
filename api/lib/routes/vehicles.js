@@ -1,11 +1,6 @@
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from '../supabase.js';
 
-const supabase = createClient(
-  process.env.SUPABASE_URL,
-  process.env.SUPABASE_ANON_KEY
-);
-
-export default async function handler(req, res) {
+export async function handleVehicles(req, res) {
   if (req.method === 'GET') {
     const { data, error } = await supabase
       .from('vehicles')

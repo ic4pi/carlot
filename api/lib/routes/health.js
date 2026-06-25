@@ -1,5 +1,4 @@
-// Visit /api/health — add ?test=groq to ping Groq with your key
-export default async function handler(req, res) {
+export async function handleHealth(req, res) {
   const groqKey = process.env.GROQ_API_KEY?.trim();
   const result = {
     ok: true,

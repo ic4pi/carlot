@@ -1,7 +1,7 @@
-import { getInventory, formatInventoryForPrompt } from './lib/inventory.js';
-import { BUSINESS, buildSystemPrompt } from './lib/dealership-prompt.js';
+import { getInventory, formatInventoryForPrompt } from '../inventory.js';
+import { BUSINESS, buildSystemPrompt } from '../dealership-prompt.js';
 
-export default async function handler(req, res) {
+export async function handleChat(req, res) {
   if (req.method !== 'POST') {
     res.setHeader('Allow', 'POST');
     return res.status(405).json({ error: 'Method not allowed' });
