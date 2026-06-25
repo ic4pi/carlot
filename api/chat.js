@@ -55,7 +55,9 @@ export default async function handler(req, res) {
       const err = await groqRes.json().catch(() => ({}));
       console.error('Groq error:', err);
       return res.status(502).json({
-        error: `Sorry, I had trouble answering. Please call ${BUSINESS.phone}.`
+        error: `Sorry, I had trouble answering. Please call ${BUSINESS.phone}.`,
+        code: 'groq_error',
+        detail: err?.error?.message || 'Groq API request failed'
       });
     }
 
