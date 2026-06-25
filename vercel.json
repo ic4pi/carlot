@@ -1,5 +1,8 @@
 {
   "version": 2,
   "buildCommand": "npm install",
-  "outputDirectory": "."
+  "outputDirectory": ".",
+  "rewrites": [
+    { "source": "/staff", "destination": "/staff/index.html" }
+  ]
 }

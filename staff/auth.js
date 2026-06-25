@@ -1,27 +1,16 @@
 (function () {
   const TOKEN_KEY = 'carlot_staff_token';
-  const ROLE_KEY = 'carlot_staff_role';
 
   function getToken() {
     return sessionStorage.getItem(TOKEN_KEY);
   }
 
-  function getRole() {
-    return sessionStorage.getItem(ROLE_KEY);
-  }
-
-  function isAdmin() {
-    return getRole() === 'admin';
-  }
-
-  function saveSession(token, role) {
+  function saveSession(token) {
     sessionStorage.setItem(TOKEN_KEY, token);
-    sessionStorage.setItem(ROLE_KEY, role);
   }
 
   function logout() {
     sessionStorage.removeItem(TOKEN_KEY);
-    sessionStorage.removeItem(ROLE_KEY);
   }
 
   async function verify() {
@@ -36,9 +25,7 @@
         logout();
         return null;
       }
-      const data = await res.json();
-      sessionStorage.setItem(ROLE_KEY, data.role);
-      return data;
+      return await res.json();
     } catch {
       logout();
       return null;
@@ -53,27 +40,22 @@
     });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.error || 'Login failed');
-    saveSession(data.token, data.role);
+    saveSession(data.token);
     return data;
   }
 
-  function dashHome() {
-    const host = location.hostname;
-    return host.startsWith('dash.') ? '/' : '/dash/index.html';
+  function staffHome() {
+    return '/staff/';
   }
 
   function requireAuth(options = {}) {
-    const { adminOnly = false, loginPath = null } = options;
+    const { loginPath = null } = options;
 
     return verify().then((session) => {
       if (!session) {
-        const dest = loginPath || dashHome();
+        const dest = loginPath || staffHome();
         const next = encodeURIComponent(location.pathname + location.search);
         location.href = `${dest}${dest.includes('?') ? '&' : '?'}login=1&next=${next}`;
-        return null;
-      }
-      if (adminOnly && session.role !== 'admin') {
-        location.href = dashHome();
         return null;
       }
       return session;
@@ -82,12 +64,10 @@
 
   window.CarlotAuth = {
     getToken,
-    getRole,
-    isAdmin,
     login,
     logout,
     verify,
     requireAuth,
-    dashHome
+    staffHome
   };
 })();

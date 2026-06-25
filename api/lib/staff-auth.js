@@ -40,7 +40,6 @@ export async function verifyPassword(password, role) {
 
 export async function loginWithPassword(password) {
   if (await verifyPassword(password, 'admin')) return 'admin';
-  if (await verifyPassword(password, 'staff')) return 'staff';
   return null;
 }
 

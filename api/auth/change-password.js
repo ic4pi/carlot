@@ -7,7 +7,7 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const role = requireRole(req, res, 'admin');
+  const role = requireRole(req, res);
   if (!role) return;
 
   const { currentPassword, newPassword, targetRole } = req.body || {};

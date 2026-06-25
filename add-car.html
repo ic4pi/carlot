@@ -474,7 +474,7 @@
 
   body.auth-pending { display: none; }
 </style>
-<script src="/dash/auth.js"></script>
+<script src="/staff/auth.js"></script>
 </head>
 <body class="auth-pending">
 
@@ -860,12 +860,7 @@ CarlotAuth.requireAuth().then((session) => {
 
 // ─── NAV ──────────────────────────────────────────────────
 function goDashboard() {
-  const host = location.hostname;
-  if (host.startsWith('dash.')) {
-    window.location.href = '/';
-  } else {
-    window.location.href = '/dash/index.html';
-  }
+  window.location.href = '/staff/';
 }
 
 // ─── RESET ────────────────────────────────────────────────

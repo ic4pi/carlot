@@ -22,7 +22,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       token: createToken(role),
       role,
-      label: role === 'admin' ? 'Manager' : 'Staff'
+      label: 'Staff'
     });
   } catch (e) {
     console.error('Login error:', e);
