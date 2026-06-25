@@ -87,7 +87,12 @@
       });
 
       const data = await res.json().catch(() => ({}));
-      if (!res.ok) throw new Error(data.error || 'Request failed');
+      if (!res.ok) {
+        if (data.code === 'missing_api_key') {
+          throw new Error('Chat not configured on this server — GROQ_API_KEY missing in Vercel.');
+        }
+        throw new Error(data.error || `Request failed (${res.status})`);
+      }
 
       history.push({ role: 'assistant', content: data.reply });
       addMessage('bot', data.reply);

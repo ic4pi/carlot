@@ -2,20 +2,29 @@ import { supabase } from './supabase.js';
 import { DEMO_INVENTORY } from './demo-inventory.js';
 
 export async function getInventory() {
-  const { data, error } = await supabase
-    .from('vehicles')
-    .select('year, make, model, trim, price, miles, drive, engine, body, notes')
-    .eq('available', true)
-    .order('created_at', { ascending: false });
+  try {
+    if (!process.env.SUPABASE_URL || !process.env.SUPABASE_ANON_KEY) {
+      return { cars: DEMO_INVENTORY, isDemo: true };
+    }
 
-  if (error) throw error;
+    const { data, error } = await supabase
+      .from('vehicles')
+      .select('year, make, model, trim, price, miles, drive, engine, body, notes')
+      .eq('available', true)
+      .order('created_at', { ascending: false });
 
-  const realCars = data || [];
-  if (realCars.length === 0) {
+    if (error) throw error;
+
+    const realCars = data || [];
+    if (realCars.length === 0) {
+      return { cars: DEMO_INVENTORY, isDemo: true };
+    }
+
+    return { cars: realCars, isDemo: false };
+  } catch (e) {
+    console.error('Inventory fetch failed, using demo:', e.message);
     return { cars: DEMO_INVENTORY, isDemo: true };
   }
-
-  return { cars: realCars, isDemo: false };
 }
 
 export function formatInventoryForPrompt(cars, isDemo) {
