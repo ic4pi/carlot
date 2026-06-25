@@ -1,7 +1,21 @@
+function getRoute(req) {
+  const route = req.query.route;
+  if (route) {
+    return Array.isArray(route) ? route.join('/') : String(route);
+  }
+
+  // Fallback: parse path from URL (e.g. /api/chat → chat)
+  try {
+    const url = new URL(req.url || '/', 'http://localhost');
+    return url.pathname.replace(/^\/api\/?/, '').replace(/\/$/, '');
+  } catch {
+    return '';
+  }
+}
+
 export default async function handler(req, res) {
   try {
-    const slug = req.query.slug;
-    const path = Array.isArray(slug) ? slug.join('/') : (slug || '');
+    const path = getRoute(req);
 
     switch (path) {
       case 'health': {
