@@ -2,6 +2,9 @@
   "name": "carlot",
   "private": true,
   "type": "module",
+  "engines": {
+    "node": "20.x"
+  },
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
     "bcryptjs": "^3.0.3"
