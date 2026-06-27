@@ -7,7 +7,7 @@ export async function handleChat(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  if (!process.env.GROQ_API_KEY) {
+  if (!process.env.OPENROUTER_API_KEY) {
     return res.status(503).json({
       error: `Chat is not configured yet. Call ${BUSINESS.phone} for help.`,
       code: 'missing_api_key'
@@ -37,31 +37,33 @@ export async function handleChat(req, res) {
         .map((m) => ({ role: m.role, content: String(m.content).slice(0, 2000) }))
     ];
 
-    const groqRes = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    const aiRes = await fetch('https://openrouter.ai/api/v1/chat/completions', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.GROQ_API_KEY}`
+        Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
+        'HTTP-Referer': process.env.SITE_URL || 'https://carlot.vercel.app',
+        'X-Title': 'Auto Mart of Flowood'
       },
       body: JSON.stringify({
-        model: process.env.GROQ_MODEL || 'llama-3.3-70b-versatile',
+        model: process.env.AI_MODEL || 'cognitivecomputations/dolphin-mistral-24b-venice-edition:free',
         messages: apiMessages,
         max_tokens: 600,
         temperature: 0.5
       })
     });
 
-    if (!groqRes.ok) {
-      const err = await groqRes.json().catch(() => ({}));
-      console.error('Groq error:', err);
+    if (!aiRes.ok) {
+      const err = await aiRes.json().catch(() => ({}));
+      console.error('OpenRouter error:', err);
       return res.status(502).json({
         error: `Sorry, I had trouble answering. Please call ${BUSINESS.phone}.`,
         code: 'groq_error',
-        detail: err?.error?.message || 'Groq API request failed'
+        detail: err?.error?.message || 'OpenRouter API request failed'
       });
     }
 
-    const data = await groqRes.json();
+    const data = await aiRes.json();
     const reply = data.choices?.[0]?.message?.content?.trim();
 
     if (!reply) {
