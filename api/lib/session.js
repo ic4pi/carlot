@@ -3,7 +3,7 @@ import crypto from 'crypto';
 const TOKEN_TTL_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 
 function secret() {
-  return process.env.AUTH_SECRET || process.env.GROQ_API_KEY || 'carlot-dev-secret-change-me';
+  return process.env.AUTH_SECRET || process.env.OPENROUTER_API_KEY || 'carlot-dev-secret-change-me';
 }
 
 export function createToken(role) {

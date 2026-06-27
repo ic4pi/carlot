@@ -1,18 +1,12 @@
 {
   "version": 2,
   "functions": {
-    "api/index.js": {
+    "api/**": {
       "maxDuration": 30
     }
   },
   "rewrites": [
     { "source": "/staff", "destination": "/staff/index.html" },
-    { "source": "/api/health", "destination": "/api?route=health" },
-    { "source": "/api/chat", "destination": "/api?route=chat" },
-    { "source": "/api/vehicles", "destination": "/api?route=vehicles" },
-    { "source": "/api/auth/login", "destination": "/api?route=auth/login" },
-    { "source": "/api/auth/verify", "destination": "/api?route=auth/verify" },
-    { "source": "/api/auth/change-password", "destination": "/api?route=auth/change-password" },
-    { "source": "/api/auth/reset-staff", "destination": "/api?route=auth/reset-staff" }
+    { "source": "/staff/", "destination": "/staff/index.html" }
   ]
 }
